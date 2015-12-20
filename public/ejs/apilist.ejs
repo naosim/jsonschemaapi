@@ -1,0 +1,5 @@
+<select class="form-control" id="api_select">
+<% data.response.forEach(function(api, index) {%>
+  <option value="<%= index %>"><%= api.title %></option>
+<% }) %>
+</select>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<link rel="stylesheet" type="text/css" href="css/skyblue.css">
+<style>
+  * {
+    letter-spacing: 0.05em;
+  }
+  body {
+    padding-bottom: 24px;
+  }
+  h1 {
+    color: white;
+    background: #1f83c6;
+    text-align: center;
+    padding: 24px;
+  }
+  #content {
+    padding: 0 32px;
+  }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="js/ejs.js"></script>
+<h1>コントロールパネル</h1>
+<div id="content">
+  <h2>API選択</h2>
+  <div id="selection_area"></div>
+  <button id="get_form_button" class="btn">フォーム取得</button>
+  <hr/>
+  <h2 id="api_title">フォーム</h2>
+  <div id="form_area"></div>
+  <hr/>
+  <h2>実行結果</h2>
+  <div id="run_result_area"></div>
+</div>
+<script>
+function querySelector(selector) {
+  return document.querySelector(selector);
+}
+
+var apiList = null;
+$.ajax({
+	url: "./apilist"
+}).done(function(data){
+  // APIリスト取得
+  apiList = data.response;
+  new EJS({url: 'ejs/apilist.ejs'}).update('selection_area', {data: data, hoge:"aaaa"})
+}).fail(function(data){
+	alert("error!");
+});
+
+document.querySelector('#get_form_button').addEventListener('click', function() {
+  // フォーム生成
+  var index = $('#api_select').val();
+  querySelector('#api_title').innerHTML = apiList[index].title + 'フォーム';
+  $.ajax({ url: apiList[index].schema_url }).done(function(data){ //ajaxの通信に成功した場合
+    new EJS({url: 'ejs/form.ejs'}).update('form_area', {data: data, api: apiList[index]});
+    var validationOk = false;
+    $('#form_area form').submit(function(event) {
+      // バリデーション送信
+      event.preventDefault();
+      var $form = $(this);
+      var $button = $form.find('input[type="submit"]');
+      // 送信
+      $.ajax({
+        url: '.' + validationOk ? apiList[index].run_url : apiList[index].valid_url,
+        type: $form.attr('method'),
+        data: $form.serialize(),
+        timeout: 10000,  // 単位はミリ秒
+        beforeSend: function(xhr, settings) {
+          $button.attr('disabled', true);
+        },
+        complete: function(xhr, textStatus) {
+        },
+        success: function(result, textStatus, xhr) {
+
+          if(!validationOk) {
+            // バリデーションの結果
+            $button.attr('disabled', false);
+            querySelector('#valid_result').innerHTML = ' バリデーションOK';
+            validationOk = true;
+            $button.val('実行');
+            querySelector('#run_result_area').innerHTML = '';
+          } else {
+            // 実行結果
+            querySelector('#run_result_area').innerHTML = `<pre>${JSON.stringify(result.response, null, '  ')}</pre>`;
+          }
+        },
+        // 通信失敗時の処理
+        error: function(xhr, textStatus, error) {
+          var result = xhr.responseJSON;
+          $button.attr('disabled', false);// バリデーションボタン復活
+          if(!validationOk) {
+            querySelector('#valid_result').innerHTML = ' バリデーションエラー<br>' + JSON.stringify(result.response);
+          } else {
+            querySelector('#run_result_area').innerHTML = '実行エラー<br>' + JSON.stringify(result.response);
+          }
+        }
+      });
+    });
+  }).fail(function(data){
+  	alert("error!");
+  });
+});
+
+</script>

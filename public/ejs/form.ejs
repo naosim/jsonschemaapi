@@ -1,0 +1,26 @@
+<!-- 相対パスにする -->
+<form action=".<%= api.run_url %>" method="GET">
+<% if(data.response.required) { %>
+  <table class="table"><thead><tr><th>key</th><th>description</th><th>value</th></tr></thead>
+  <tbody>
+  <% data.response.required.forEach(function(key) { %>
+    <tr>
+      <td><%= key %></td><td><%= data.response.properties[key].description %></td>
+      <% var type = data.response.properties[key].type; %>
+      <% if(type === 'string') { %>
+        <td><input type="text" class="form-control" name="<%= key %>"></input></td>
+      <% } else { %>
+        <td><select class="form-control" id="<%= key %>_select" name="<%= key %>">
+        <% type.enum.forEach(function(value) { %>
+          <option value="<%= value %>"><%= value %></option>
+        <% }); %>
+        </select></td>
+      <% } %>
+    </tr>
+  <% }); %>
+  </tbody></table>
+<% } else { %>
+  入力パラメータなし
+<% } %>
+<br><input type="submit" class="btn" value="バリデーション"></input><span id="valid_result"></span>
+</form>
