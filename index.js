@@ -36,9 +36,9 @@ var referApi = {
 
 var updateNameApi = {
   title: '名前更新',
-  schema_url:'/update/name/schema',
-  valid_url:'/update/name/valid',
-  run_url:'/update/name/run',
+  schema_url:'/update/name/schema',// json_schemaを返すURL
+  valid_url:'/update/name/valid',  // インパラがjsonスキーマに合ってるか確認するURL
+  run_url:'/update/name/run',      // 機能を実行するURL
   json_schema: {// フォームを想定しているので、階層はもたない
     $schema: "http://json-schema.org/draft-04/schema#",
     title: '名前更新',
@@ -49,8 +49,11 @@ var updateNameApi = {
     }
   },
   onValidationError: function(req, errors) {},
-  onNormal: function(req, res) {
+  onNormal: function(req, res) {// バリデーションが通った場合の処理
+    // 名前更新
     person.name = req.query.name;
+
+    // レスポンス
     res.send({
       status: http.STATUS_CODES[200],
       status_code: 200,
