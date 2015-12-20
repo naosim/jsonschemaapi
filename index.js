@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var validate = require('jsonschema').validate;
 var http = require('http');
-var port = parseInt(process.argv[2]);
+var port = process.argv.length == 3 ? parseInt(process.argv[2]) : 3000;
 
 // 終了スクリプト生成
 require('fs').writeFileSync('stop.sh', 'kill -9 ' + process.pid);

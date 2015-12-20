@@ -82,7 +82,7 @@ document.querySelector('#get_form_button').addEventListener('click', function() 
             querySelector('#run_result_area').innerHTML = '';
           } else {
             // 実行結果
-            querySelector('#run_result_area').innerHTML = `<pre>${JSON.stringify(result.response, null, '  ')}</pre>`;
+            querySelector('#run_result_area').innerHTML = `<pre>${JSON.stringify(result, null, '  ')}</pre>`;
           }
         },
         // 通信失敗時の処理
@@ -90,9 +90,9 @@ document.querySelector('#get_form_button').addEventListener('click', function() 
           var result = xhr.responseJSON;
           $button.attr('disabled', false);// バリデーションボタン復活
           if(!validationOk) {
-            querySelector('#valid_result').innerHTML = ' バリデーションエラー<br>' + JSON.stringify(result.response);
+            querySelector('#valid_result').innerHTML = ` バリデーションエラー<br><pre>${JSON.stringify(result)}</pre>`;
           } else {
-            querySelector('#run_result_area').innerHTML = '実行エラー<br>' + JSON.stringify(result.response);
+            querySelector('#run_result_area').innerHTML = `実行エラー<br><pre>${JSON.stringify(result, null, '  ')}</pre>`;
           }
         }
       });
