@@ -90,7 +90,7 @@ document.querySelector('#get_form_button').addEventListener('click', function() 
           var result = xhr.responseJSON;
           $button.attr('disabled', false);// バリデーションボタン復活
           if(!validationOk) {
-            querySelector('#valid_result').innerHTML = ` バリデーションエラー<br><pre>${JSON.stringify(result)}</pre>`;
+            querySelector('#valid_result').innerHTML = ` バリデーションエラー<br><pre>${JSON.stringify(result, null, '  ')}</pre>`;
           } else {
             querySelector('#run_result_area').innerHTML = `実行エラー<br><pre>${JSON.stringify(result, null, '  ')}</pre>`;
           }
