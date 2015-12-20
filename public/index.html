@@ -62,7 +62,7 @@ document.querySelector('#get_form_button').addEventListener('click', function() 
       var $button = $form.find('input[type="submit"]');
       // 送信
       $.ajax({
-        url: '.' + validationOk ? apiList[index].run_url : apiList[index].valid_url,
+        url: '.' + (validationOk ? apiList[index].run_url : apiList[index].valid_url),
         type: $form.attr('method'),
         data: $form.serialize(),
         timeout: 10000,  // 単位はミリ秒
