@@ -52,7 +52,7 @@ document.querySelector('#get_form_button').addEventListener('click', function() 
   // フォーム生成
   var index = $('#api_select').val();
   querySelector('#api_title').innerHTML = apiList[index].title + 'フォーム';
-  $.ajax({ url: apiList[index].schema_url }).done(function(data){ //ajaxの通信に成功した場合
+  $.ajax({ url: '.' + apiList[index].schema_url }).done(function(data){ //ajaxの通信に成功した場合
     new EJS({url: 'ejs/form.ejs'}).update('form_area', {data: data, api: apiList[index]});
     var validationOk = false;
     $('#form_area form').submit(function(event) {

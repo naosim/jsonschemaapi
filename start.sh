@@ -1,1 +1,1 @@
-nohup node index.js -p 3004 &
+nohup node index.js 3004 &
